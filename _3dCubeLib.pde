@@ -1,11 +1,11 @@
-
 #include <MsTimer2.h>
 
-
+//The number of Planes
 #define PLANES 4
+
 #define PLANESIZE PLANES*PLANES
 
-
+//Pins for the shift register(s)
 int latchPin = 12;
 int clockPin = 8;
 int dataPin = 11;
@@ -39,6 +39,8 @@ void setup() {
   
   randomSeed(analogRead(0));
   clearBuffer();
+  
+  //Set drawbuffer to run on an interrupt
   MsTimer2::set(2, drawBuffer); 
   MsTimer2::start();
 }
@@ -69,6 +71,7 @@ void drawBuffer()
     plane = 0;
   }
   
+  //Set shiftout the data to light up the correct LEDs for this pane
   digitalWrite(PlanePin[plane], LOW);    
   digitalWrite(latchPin, LOW);  
   shiftOut(dataPin, clockPin, LSBFIRST, buffer[plane][0]);
@@ -79,6 +82,8 @@ void drawBuffer()
 
 /** 
  *  Main Loop
+ * Display different patterns for a set time each
+ * TODO: make this change pattern based on a button
  */ 
 void loop()
 {  
@@ -107,10 +112,12 @@ void loop()
 
 
 /** 
- * Move between top and bottom planes
+ * Move between top and bottom planes randomly
  */
 void planeShift()
 {
+  
+  //Array to contain the position of 16 lit LEDs
   static int points[16][3] = {
     {1,4,1}, {2,4,1}, {3,4,1}, {4,4,1},
     {1,4,2}, {2,4,2}, {3,4,2}, {4,4,2},
@@ -200,6 +207,7 @@ void drawCube(int x, int y, int z)
 
 /**
  * Spinning vertical plane
+ * TODO: do this with code rather than hardcoded points
  */
 void spin(int wait)
 {
